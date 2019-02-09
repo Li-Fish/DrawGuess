@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../static/js/pixi.min.js"></script>
+    <title>Game</title>
+</head>
+<body>
+<script>
+    let Application = PIXI.Application,
+        Container = PIXI.Container,
+        loader = PIXI.loader,
+        resources = PIXI.loader.resources,
+        TextureCache = PIXI.utils.TextureCache,
+        Sprite = PIXI.Sprite,
+        Rectangle = PIXI.Rectangle,
+        log = console.log
+
+
+    let app = new Application({
+        width: 700,
+        height: 700
+    })
+
+    let gameClock = 0
+
+    document.body.appendChild(app.view)
+
+    loader
+        .add('')
+        .load(setup)
+
+    let gameScene, blocks = []
+
+    function setup() {
+        createSprite()
+        app.ticker.add(delta => gameLoop())
+    }
+
+    let mounseIsDown = false
+    let lastX, lastY
+
+    let inks = []
+
+    function createSprite() {
+        gameScene = new Container()
+        app.stage.addChild(gameScene)
+        app.stage.bgColor = 0
+        onmousedown = ev => {
+            lastX = ev.layerX
+            lastY = ev.layerY
+            mounseIsDown = true
+            drawCircle(ev.layerX, ev.layerY)
+        }
+
+        onmouseup = ev => {
+            lastX = -1
+            lastY = -1
+            mounseIsDown = false
+            if (lastX > 0) {
+                drawLine(lastX, lastY, ev.layerX, ev.layerY)
+            }
+            drawCircle(ev.layerX, ev.layerY)
+        }
+
+        onmousemove = ev => {
+            if (gameClock % 30x === 0) return
+            if (mounseIsDown) {
+                if (lastX > 0) {
+                    drawLine(lastX, lastY, ev.layerX, ev.layerY)
+                }
+                drawCircle(ev.layerX, ev.layerY)
+            }
+            lastX = ev.layerX
+            lastY = ev.layerY
+        }
+
+        onkeydown = ev => {
+            if (ev.key === "Backspace") {
+
+                gameScene.removeChild(inks.pop())
+                gameScene.removeChild(inks.pop())
+                gameScene.removeChild(inks.pop())
+                gameScene.removeChild(inks.pop())
+                gameScene.removeChild(inks.pop())
+            }
+        }
+    }
+
+    function drawLine(sx, sy, ex, ey) {
+        let line = new PIXI.Graphics()
+        gameScene.addChild(line)
+        line.lineStyle(4, 0x66CCFF).moveTo(sx, sy).lineTo(ex, ey)
+
+        inks.push(line)
+    }
+
+    function drawCircle(x, y) {
+        let circle = new PIXI.Graphics()
+        circle.beginFill(0x66CCFF)
+        circle.drawCircle(x, y, 2)
+        circle.endFill()
+        gameScene.addChild(circle)
+
+        inks.push(circle)
+    }
+
+    function gameLoop() {
+        gameClock = (gameClock + 1) % 1000000
+    }
+</script>
+</body>
+</html>
