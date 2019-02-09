@@ -2,10 +2,140 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <link href="../static/css/semantic.min.css">
+
+    <script src="../static/js/jquery-3.3.1.js"></script>
+    <script src="../static/js/semantic.min.js"></script>
     <script src="../static/js/pixi.min.js"></script>
+
+    <style type="text/css">
+        body {
+            background: #4c4f52;
+        }
+        #main {
+            width: 1300px;
+        }
+
+        #userlist {
+            float: left;
+            width: 150px;
+            height: 600px;
+            background: #0d71bb;
+        }
+
+        #gamebody {
+        }
+
+        #content {
+            float: left;
+        }
+
+        #canvas {
+            height: 500px;
+        }
+
+        #chat {
+            width: 250px;
+            height: 600px;
+            float: left;
+            background: #0e8c8c;
+        }
+
+        .usercard {
+            border-bottom: #4c4f52 solid;
+            width: 150px;
+            height: 97px;
+            background: #0ea432;
+        }
+
+        #gamehead {
+            width: 1300px;
+            height: 30px;
+            background: #0f0f10;
+        }
+
+        #infobar {
+            width: 900px;
+            height: 50px;
+            background: #5a30b5;
+        }
+
+        #toolbar {
+            float: top;
+            width: 900px;
+            height: 50px;
+            background: #5a30b5;
+        }
+
+        #chatcontent {
+            width: 250px;
+            height: 500px;
+            background: #9f3a38;
+        }
+        #chattextinput {
+            float: left;
+            width: 200px;
+            height: 100px;
+            background: #794b02;
+        }
+        #chatbutton {
+            float: left;
+            width: 50px;
+            height: 100px;
+            background: #7aa61a;
+        }
+    </style>
     <title>Game</title>
 </head>
 <body>
+
+<div id="main" class="ui container">
+    <div id="gamehead">
+
+    </div>
+    <div id="gamebody">
+        <div id="userlist">
+            <div class="usercard">
+                <div class="username">Fish</div>
+                <div class="score">7</div>
+            </div>
+            <div class="usercard">
+
+            </div>
+            <div class="usercard">
+
+            </div>
+            <div class="usercard">
+
+            </div>
+            <div class="usercard">
+
+            </div>
+            <div class="usercard">
+
+            </div>
+        </div>
+        <div id="content">
+            <div id="infobar"></div>
+            <div id="canvas">
+
+            </div>
+            <div id="toolbar"></div>
+        </div>
+        <div id="chat">
+            <div id="chatcontent">
+
+            </div>
+            <div id="chatinput">
+                <div id="chattextinput"></div>
+                <button id="chatbutton"></button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 <script>
     let Application = PIXI.Application,
         Container = PIXI.Container,
@@ -18,13 +148,15 @@
 
 
     let app = new Application({
-        width: 700,
-        height: 700
+        width: 900,
+        height: 500
     })
 
     let gameClock = 0
 
-    document.body.appendChild(app.view)
+    let draw = $("#canvas")
+
+    draw.append(app.view)
 
     loader
         .add('')
@@ -43,17 +175,21 @@
     let inks = []
 
     function createSprite() {
+        app.renderer.backgroundColor = 0xD9CD90;
+
         gameScene = new Container()
+
         app.stage.addChild(gameScene)
         app.stage.bgColor = 0
-        onmousedown = ev => {
+
+        app.view.onmousedown = ev => {
             lastX = ev.layerX
             lastY = ev.layerY
             mounseIsDown = true
             drawCircle(ev.layerX, ev.layerY)
         }
 
-        onmouseup = ev => {
+        app.view.onmouseleave = ev => {
             lastX = -1
             lastY = -1
             mounseIsDown = false
@@ -63,7 +199,17 @@
             drawCircle(ev.layerX, ev.layerY)
         }
 
-        onmousemove = ev => {
+        app.view.onmouseup = ev => {
+            lastX = -1
+            lastY = -1
+            mounseIsDown = false
+            if (lastX > 0) {
+                drawLine(lastX, lastY, ev.layerX, ev.layerY)
+            }
+            drawCircle(ev.layerX, ev.layerY)
+        }
+
+        app.view.onmousemove = ev => {
             if (gameClock % 30 === 0) return
             if (mounseIsDown) {
                 if (lastX > 0) {
@@ -73,17 +219,6 @@
             }
             lastX = ev.layerX
             lastY = ev.layerY
-        }
-
-        onkeydown = ev => {
-            if (ev.key === "Backspace") {
-
-                gameScene.removeChild(inks.pop())
-                gameScene.removeChild(inks.pop())
-                gameScene.removeChild(inks.pop())
-                gameScene.removeChild(inks.pop())
-                gameScene.removeChild(inks.pop())
-            }
         }
     }
 
