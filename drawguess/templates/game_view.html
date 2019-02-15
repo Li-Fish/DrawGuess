@@ -2,19 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <link href="../static/css/semantic.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="../static/js/jquery-3.3.1.js"></script>
-    <script src="../static/js/semantic.min.js"></script>
     <script src="../static/js/pixi.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 
     <style type="text/css">
         body {
             background: #4c4f52;
         }
+
         #main {
-            width: 1300px;
+            margin-top: 100px;
+            padding: 0;
+            width: 1320px;
         }
 
         #userlist {
@@ -29,6 +41,8 @@
 
         #content {
             float: left;
+            margin-left: 10px;
+            margin-right: 10px;
         }
 
         #canvas {
@@ -50,9 +64,8 @@
         }
 
         #gamehead {
-            width: 1300px;
-            height: 30px;
-            background: #0f0f10;
+            margin-bottom: 30px;
+            background: darksalmon;
         }
 
         #infobar {
@@ -69,36 +82,46 @@
         }
 
         #chatcontent {
+
+            overflow: scroll;
+
             width: 250px;
             height: 500px;
             background: #9f3a38;
         }
+
         #chattextinput {
             float: left;
             width: 200px;
             height: 100px;
-            background: #794b02;
         }
+
         #chatbutton {
             float: left;
             width: 50px;
             height: 100px;
             background: #7aa61a;
         }
+
+        .news {
+            width: 250px;
+            height: 50px;
+            background: #8a8a8a;
+            margin-bottom: 3px;
+        }
     </style>
     <title>Game</title>
 </head>
 <body>
+<div id="gamehead" class="navbar navbar-fixed-top">
 
-<div id="main" class="ui container">
-    <div id="gamehead">
-
-    </div>
+</div>
+<div id="main" class="container">
     <div id="gamebody">
         <div id="userlist">
             <div class="usercard">
                 <div class="username">Fish</div>
-                <div class="score">7</div>
+                <div class="score">Score: 7</div>
             </div>
             <div class="usercard">
 
@@ -117,7 +140,17 @@
             </div>
         </div>
         <div id="content">
-            <div id="infobar"></div>
+            <div id="infobar">
+                <div class="row">
+                    <div class="col-md-3">头像</div>
+                    <div class="col-md-6">
+                        四字成语
+                    </div>
+                    <div id="gametime" class="col-md-3">
+                        <a>60</a>S
+                    </div>
+                </div>
+            </div>
             <div id="canvas">
 
             </div>
@@ -125,11 +158,10 @@
         </div>
         <div id="chat">
             <div id="chatcontent">
-
             </div>
             <div id="chatinput">
-                <div id="chattextinput"></div>
-                <button id="chatbutton"></button>
+                <textarea id="chattextinput"></textarea>
+                <button id="chatbutton">发送</button>
             </div>
         </div>
     </div>
@@ -145,6 +177,32 @@
         Sprite = PIXI.Sprite,
         Rectangle = PIXI.Rectangle,
         log = console.log
+
+
+    let gameTime = $("#gametime")
+    let inputBtn = $("#chatbutton")
+    let chatContent = $("#chatcontent")
+    let inputText = $("#chattextinput")
+    let nowAns = ["国士无双"]
+
+    setInterval((e) => {
+        let now = parseInt(gameTime.text())
+        now--
+        gameTime.text(now.toString())
+    }, 1000)
+
+    inputBtn.click((e) => {
+        let node = $("<div class='news'></div>")
+        let data = inputText.val().trim()
+
+        for (let x of nowAns) {
+            if (x === data) alert('Accept')
+        }
+
+        node.text(data)
+        inputText.val("")
+        chatContent.append(node)
+    })
 
 
     let app = new Application({
